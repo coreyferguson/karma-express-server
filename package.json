@@ -20,5 +20,9 @@
   "bugs": {
     "url": "https://github.com/coreyferguson/karma-express-server/issues"
   },
-  "homepage": "https://github.com/coreyferguson/karma-express-server#readme"
+  "homepage": "https://github.com/coreyferguson/karma-express-server#readme",
+  "dependencies": {
+    "body-parser": "^1.15.1",
+    "express": "^4.13.4"
+  }
 }
