@@ -1,40 +1,64 @@
 
-var express = require("express");
-var https = require("https");
-var path = require("path");
-var fs = require("fs");
-var bodyParser = require("body-parser");
+'use strict';
+
+const express = require('express');
+const http = require('http');
+const https = require('https');
+const path = require('path');
+const fs = require('fs');
+const bodyParser = require('body-parser');
 
 /**
- * Creates an express server and passes `app` and `logger` to karma configuration for
- * further extension.
+ * Creates an express server and passes `app` and `logger` to karma
+ * configuration for further extension.
  */
-var createExpressServer = function(args, config, logger, helper) {
-    var log = logger.create("karma-express");
-    var expressServerConfig = config.expressServer;
-    // construct express server
-    log.info("Starting express server...");
-    var app = express();
-    app.use(bodyParser.json());
-    // enable CORS from karma browser to express server
-    app.use(function(req, res, next) {
-        res.set("Access-Control-Allow-Credentials", "true");
-        res.set("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
-        res.set("Access-Control-Max-Age", "3600");
-        res.set("Access-Control-Allow-Headers", "x-requested-with, Content-Type, Content-Length, Content-Range, Content-Encoding");
-        res.set("Access-Control-Allow-Origin", expressServerConfig.corsAllowOrigin);
-        next();
-    });
-    // extend express application
-    expressServerConfig.extensions.forEach(function(extension) {
-        extension(app, logger);
-    });
-    // start express server
-    var options = expressServerConfig.httpsServerOptions;
-    var httpsServer = https.createServer(options, app)
-            .listen(expressServerConfig.port, function() {
-        log.info("Listening on port %d...", expressServerConfig.port);
-    });
-};
+module.exports = {
+  'framework:expressServer': [
+    'factory',
+    function(args, configOverrides, logger) {
+      // default config
+      configOverrides = configOverrides || {};
+      configOverrides = configOverrides.expressServer || {};
+      let configDefaults = {
+        accessControlAllowOrigin: 'http://localhost:9876',
+        accessControlAllowCredentials: 'true',
+        accessControlAllowMethods: 'GET, PUT, POST, DELETE, OPTIONS',
+        accessControlMaxAge: '3600',
+        accessControlAllowHeaders: 'x-requested-with, Content-Type, ' +
+          'Content-Length, Content-Range, Content-Encoding',
+        serverOptions: {},
+        serverPort: 9877,
+        extensions: []
+      };
+      let config = {};
+      Object.assign(config, configDefaults, configOverrides);
 
-module.exports = { "framework:expressServer": ["factory", createExpressServer] };
+      // construct express server
+      let log = logger.create('karma-express-server');
+      log.info('Starting express server...');
+      let app = express();
+      app.use(bodyParser.json());
+      app.use(function(req, res, next) {
+        res.set('Access-Control-Allow-Credentials',
+            config.accessControlAllowCredentials.toString());
+        res.set('Access-Control-Allow-Methods',
+            config.accessControlAllowMethods);
+        res.set('Access-Control-Max-Age', config.accessControlMaxAge);
+        res.set('Access-Control-Allow-Headers', accessControlAllowHeaders);
+        res.set('Access-Control-Allow-Origin', accessControlAllowOrigin);
+        next();
+      });
+
+      // extend express application
+      config.extensions.forEach(function(extension) {
+        extension(app, logger);
+      });
+
+      // start express server
+      let httpsServer = https.createServer(config.serverOptions, app)
+          .listen(config.serverPort, function() {
+        log.info('Listening on port %d...', config.serverPort);
+      });
+    }
+  ]
+};
