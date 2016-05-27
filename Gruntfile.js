@@ -10,5 +10,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('default', ['jscs', 'mochaTest']);
+  grunt.registerTask('test', ['mochaTest', 'watch']);
+  grunt.registerTask('test:single', ['mochaTest']);
 
 };

@@ -4,29 +4,32 @@
 const express = require('express');
 const http = require('http');
 const https = require('https');
-const path = require('path');
-const fs = require('fs');
 const bodyParser = require('body-parser');
+
+if (process.env.NODE_ENV !== 'production') {
+  require('longjohn');
+}
 
 /**
  * Creates an express server and passes `app` and `logger` to karma
  * configuration for further extension.
  */
 module.exports = {
-  'framework:expressServer': [
-    'factory',
+  'framework:expressServer': ['factory',
     function(args, configOverrides, logger) {
       // default config
       configOverrides = configOverrides || {};
       configOverrides = configOverrides.expressServer || {};
       let configDefaults = {
+        callback: () => {},
         accessControlAllowOrigin: 'http://localhost:9876',
         accessControlAllowCredentials: 'true',
         accessControlAllowMethods: 'GET, PUT, POST, DELETE, OPTIONS',
         accessControlMaxAge: '3600',
         accessControlAllowHeaders: 'x-requested-with, Content-Type, ' +
           'Content-Length, Content-Range, Content-Encoding',
-        serverOptions: {},
+        https: false,
+        httpsServerOptions: {},
         serverPort: 9877,
         extensions: []
       };
@@ -44,8 +47,8 @@ module.exports = {
         res.set('Access-Control-Allow-Methods',
             config.accessControlAllowMethods);
         res.set('Access-Control-Max-Age', config.accessControlMaxAge);
-        res.set('Access-Control-Allow-Headers', accessControlAllowHeaders);
-        res.set('Access-Control-Allow-Origin', accessControlAllowOrigin);
+        res.set('Access-Control-Allow-Headers', config.accessControlAllowHeaders);
+        res.set('Access-Control-Allow-Origin', config.accessControlAllowOrigin);
         next();
       });
 
@@ -55,10 +58,22 @@ module.exports = {
       });
 
       // start express server
-      let httpsServer = https.createServer(config.serverOptions, app)
-          .listen(config.serverPort, function() {
-        log.info('Listening on port %d...', config.serverPort);
-      });
+      if (config.https) {
+        var server = https
+        .createServer(config.httpsServerOptions, app)
+        .listen(config.serverPort, () => {
+          log.info('Listening on port %d...', config.serverPort);
+          config.callback(server);
+        });
+      } else {
+        var server = http
+        .createServer(app)
+        .listen(config.serverPort, () => {
+          log.info('Listening on port %d...', config.serverPort);
+          config.callback(server);
+        });
+      }
+
     }
   ]
 };
