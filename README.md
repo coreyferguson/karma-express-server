@@ -75,9 +75,9 @@ expressServer: {
 // ...
 ```
 
-### Options
+### More Configuration
 
-
+All [Config properties](http://coreyferguson.github.io/karma-express-server/karmaExpressServer.html#.Config) are documented in the [API Documentation](http://coreyferguson.github.io/karma-express-server/karmaExpressServer.html).
 
 ## Contribution
 
