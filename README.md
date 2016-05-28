@@ -33,11 +33,6 @@ module.exports = function(config) {
     expressServer: {
 
       port: 9877, // different than karma's port
-      protocol: 'https',
-      httpsServerOptions: {
-        key: fs.readFileSync('path/to/my-server.key.pem'),
-        cert: fs.readFileSync('path/to/my-server.crt.pem')
-      },
 
       // custom extensions go here
       extensions: [
@@ -58,6 +53,29 @@ module.exports = function(config) {
 };
 ```
 
+### SSL
+
+Self-signed certificates can be generated with [nodejs-self-signed-certificate-example](https://github.com/coolaj86/nodejs-self-signed-certificate-example).
+
+```javascript
+// ...
+
+expressServer: {
+
+  // ...
+
+  protocol: 'https',
+  httpsServerOptions: {
+    key: fs.readFileSync('path/to/my-server.key.pem'),
+    cert: fs.readFileSync('path/to/my-server.crt.pem')
+  }
+
+}
+
+// ...
+```
+
+
 ## Contribution
 
-See [Contribution](./CONTRIBUTE) documentation for build, test and publish details.
+See [Contribution](./CONTRIBUTE.md) documentation for build, test and publish details.
