@@ -36,7 +36,7 @@ describe('plugin integration test', () => {
   // util //
   //////////
 
-  function startWithExtensions({https, extensions, httpsServerOptions}) {
+  function startWithExtensions({protocol, extensions, httpsServerOptions}) {
     return new Promise((resolve, reject) => {
       let args = {};
       let config = {
@@ -45,7 +45,7 @@ describe('plugin integration test', () => {
             resolve(server);
           },
           extensions,
-          https,
+          protocol,
           httpsServerOptions
         }
       };
@@ -55,21 +55,19 @@ describe('plugin integration test', () => {
 
   /**
    * GET request to heartbeat endpoint
-   * @param {boolean} httpsEnabled indicates if https protocol should be used.
-   * @param {Object} [server] http server to be closed after GET request.
+   * @param {string} protocol 'http' || 'https'
+   * @param {Object} [server] http(s) server to be closed after GET request.
    * @returns {Promise}
    */
-  function getHeartbeat(httpsEnabled, server) {
+  function getHeartbeat(protocol, server) {
     return new Promise((resolve, reject) => {
       let options = {};
-      if (httpsEnabled) {
-        options.uri = 'https://local.ldsconnect.org:9877/heartbeat';
+      if (protocol === 'https') {
         options.cert = cert;
         options.key = key;
         options.ca = ca;
-      } else {
-        options.uri = 'http://local.ldsconnect.org:9877/heartbeat'
       }
+      options.uri = protocol + '://local.ldsconnect.org:9877/heartbeat';
       options.method = 'GET';
       request(options, (err, res, body) => {
         if (err) {
@@ -89,24 +87,33 @@ describe('plugin integration test', () => {
   // tests //
   ///////////
 
-  it('GET http extension', () => {
+  it('GET default extension', () => {
     return startWithExtensions({
       extensions: [heartBeatExtension]
     }).then(server => {
-      return getHeartbeat(false, server);
+      return getHeartbeat('http', server);
+    })
+  });
+
+  it('GET http extension', () => {
+    return startWithExtensions({
+      protocol: 'http',
+      extensions: [heartBeatExtension]
+    }).then(server => {
+      return getHeartbeat('http', server);
     })
   });
 
   it('GET https extension', () => {
     return startWithExtensions({
-      https: true,
+      protocol: 'https',
       httpsServerOptions: {
         key: key,
         cert: cert
       },
       extensions: [heartBeatExtension]
     }).then((server) => {
-      return getHeartbeat(true, server).then(res => {
+      return getHeartbeat('https', server).then(res => {
         return t.expect(res.statusCode).to.equal(200);
       });
     });

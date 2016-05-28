@@ -91,7 +91,7 @@ describe('plugin unit test', () => {
     t.expect(() => {
       startServer([], {
         expressServer: {
-          https: true,
+          protocol: 'https',
           callback: _server => server = _server
         }
       }, loggerStub);

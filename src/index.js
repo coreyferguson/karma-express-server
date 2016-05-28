@@ -28,7 +28,7 @@ module.exports = {
         accessControlMaxAge: '3600',
         accessControlAllowHeaders: 'x-requested-with, Content-Type, ' +
           'Content-Length, Content-Range, Content-Encoding',
-        https: false,
+        protocol: 'http',
         httpsServerOptions: null,
         serverPort: 9877,
         extensions: []
@@ -38,7 +38,7 @@ module.exports = {
 
       // input validation
       if (
-        config.https && (
+        config.protocol === 'https' && (
           config.httpsServerOptions === null ||
           config.httpsServerOptions === undefined
         )
@@ -68,7 +68,7 @@ module.exports = {
       });
 
       // start express server
-      if (config.https) {
+      if (config.protocol === 'https') {
         var server = https
         .createServer(config.httpsServerOptions, app)
         .listen(config.serverPort, () => {
