@@ -1,17 +1,23 @@
 
 'use strict';
 
-const t = require('../support/globals-mocha');
-const proxyquire = require('proxyquire');
-const expressStub = require('../stubs/express-stub');
-const httpsStub = require('../stubs/https-stub');
-const loggerStub = require('../stubs/logger-stub');
-const fs = require('fs');
-const path = require('path');
-const cert = fs.readFileSync(path.join(__dirname, '../support/my-server.crt.pem'));
-const key = fs.readFileSync(path.join(__dirname, '../support/my-server.key.pem'));
+const t = require('../support/globals-mocha'),
+      proxyquire = require('proxyquire');
+
+const expressStub = require('../stubs/express-stub'),
+      httpsStub = require('../stubs/https-stub'),
+      loggerStub = require('../stubs/logger-stub');
+
+const fs = require('fs'),
+      path = require('path'),
+      cert = fs.readFileSync(path.join(__dirname, '../support/my-server.crt.pem')),
+      key = fs.readFileSync(path.join(__dirname, '../support/my-server.key.pem'));
 
 describe('plugin unit test', () => {
+
+  ////////////////////
+  // initialization //
+  ////////////////////
 
   let plugin,
       sandbox,
@@ -32,6 +38,10 @@ describe('plugin unit test', () => {
     return closeServer();
   });
 
+  //////////
+  // util //
+  //////////
+
   /**
    * Close server if it was previously opened.
    * @returns {Promise}
@@ -47,6 +57,10 @@ describe('plugin unit test', () => {
       });
     }
   }
+
+  ///////////
+  // tests //
+  ///////////
 
   it('named appropriately', () => {
     t.expect(Object.keys(plugin)).to.eql(['framework:expressServer']);

@@ -1,20 +1,17 @@
 
 'use strict';
 
-const t = require('../support/globals-mocha');
-const plugin = require('../../src/index');
-const loggerStub = require('../stubs/logger-stub');
-const request = require('request');
+const t = require('../support/globals-mocha'),
+      plugin = require('../../src/index');
 
-const fs = require('fs');
-const path = require('path');
-const cert = fs.readFileSync(path.join(__dirname, '../support/my-server.crt.pem'));
-const key = fs.readFileSync(path.join(__dirname, '../support/my-server.key.pem'));
-const ca = fs.readFileSync(path.join(__dirname, '../support/my-root-ca.crt.pem'));
-// const ca = fs.readFileSync(path.join(__dirname, '../support/my-private-root-ca.crt.pem'));
-// const key = path.join(__dirname, '../support/key.pem');
-// const certificate = path.join(__dirname, '../support/certificate.pem');
-// const certrequest = path.join(__dirname, '../support/certrequest.csr');
+const loggerStub = require('../stubs/logger-stub');
+
+const request = require('request'),
+			fs = require('fs'),
+			path = require('path'),
+			cert = fs.readFileSync(path.join(__dirname, '../support/my-server.crt.pem')),
+			key = fs.readFileSync(path.join(__dirname, '../support/my-server.key.pem')),
+			ca = fs.readFileSync(path.join(__dirname, '../support/my-root-ca.crt.pem'));
 
 describe('plugin integration test', () => {
 
