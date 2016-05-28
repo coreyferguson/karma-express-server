@@ -70,10 +70,23 @@ describe('plugin unit test', () => {
     t.expect(stub2).to.be.calledWith(expressStub(), loggerStub);
   });
 
+  it('requires httpsServerOptions', () => {
+    let stub = sandbox.stub(httpsStub, 'createServer').returns({
+      listen: () => {}
+    });
+    t.expect(() => {
+      startServer([], {
+        expressServer: {
+          https: true,
+          callback: _server => server = _server
+        }
+      }, loggerStub);
+    }).to.throw(/httpsServerOptions/);
+  });
+
   it('creates https server', () => {
     let stub = sandbox.stub(httpsStub, 'createServer').returns({
-      listen: () => {
-      }
+      listen: () => {}
     });
     startServer([], {
       expressServer: {

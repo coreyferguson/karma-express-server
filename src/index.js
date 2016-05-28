@@ -29,12 +29,22 @@ module.exports = {
         accessControlAllowHeaders: 'x-requested-with, Content-Type, ' +
           'Content-Length, Content-Range, Content-Encoding',
         https: false,
-        httpsServerOptions: {},
+        httpsServerOptions: null,
         serverPort: 9877,
         extensions: []
       };
       let config = {};
       Object.assign(config, configDefaults, configOverrides);
+
+      // input validation
+      if (
+        config.https && (
+          config.httpsServerOptions === null ||
+          config.httpsServerOptions === undefined
+        )
+      ) {
+        throw new Error('Illegal argument: `httpsServerOptions` cannot be null or undefined.');
+      }
 
       // construct express server
       let log = logger.create('karma-express-server');
