@@ -7,11 +7,11 @@ const t = require('../support/globals-mocha'),
 const loggerStub = require('../stubs/logger-stub');
 
 const request = require('request'),
-			fs = require('fs'),
-			path = require('path'),
-			cert = fs.readFileSync(path.join(__dirname, '../support/my-server.crt.pem')),
-			key = fs.readFileSync(path.join(__dirname, '../support/my-server.key.pem')),
-			ca = fs.readFileSync(path.join(__dirname, '../support/my-root-ca.crt.pem'));
+      fs = require('fs'),
+      path = require('path'),
+      cert = fs.readFileSync(path.join(__dirname, '../support/my-server.crt.pem')),
+      key = fs.readFileSync(path.join(__dirname, '../support/my-server.key.pem')),
+      ca = fs.readFileSync(path.join(__dirname, '../support/my-root-ca.crt.pem'));
 
 describe('plugin integration test', () => {
 
