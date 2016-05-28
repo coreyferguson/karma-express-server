@@ -84,21 +84,4 @@ describe('plugin unit test', () => {
     }).to.throw(/httpsServerOptions/);
   });
 
-  it('creates https server', () => {
-    let stub = sandbox.stub(httpsStub, 'createServer').returns({
-      listen: () => {}
-    });
-    startServer([], {
-      expressServer: {
-        https: true,
-        httpsServerOptions: {
-          key: key,
-          cert: cert
-        },
-        callback: _server => server = _server
-      }
-    }, loggerStub);
-    t.expect(stub).to.be.calledWith(t.sinon.match.object, expressStub());
-  });
-
 });
