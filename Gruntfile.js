@@ -6,7 +6,8 @@ module.exports = function(grunt) {
   grunt.initConfig({
     jscs: require('./config/grunt-jscs'),
     watch: require('./config/grunt-watch'),
-    mochaTest: require('./config/grunt-mocha-test')
+    mochaTest: require('./config/grunt-mocha-test'),
+    bump: require('./config/grunt-bump')
   });
 
   grunt.registerTask('default', ['jscs', 'mochaTest']);

@@ -28,6 +28,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "grunt": "^1.0.1",
+    "grunt-bump": "^0.8.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-jscs": "^2.8.0",
     "grunt-mocha-test": "^0.12.7",
