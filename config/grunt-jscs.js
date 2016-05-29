@@ -1,7 +1,10 @@
 
 module.exports = {
   dev: {
-    src: 'src/**/*.js'
+    src: [
+      'src/**/*.js',
+      'test/**/*.js'
+    ]
   },
   options: {
     config: '.jscsrc',

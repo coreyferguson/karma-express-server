@@ -6,6 +6,6 @@ module.exports = {
     return {
       info: (message) => {
       }
-    }
+    };
   }
 };

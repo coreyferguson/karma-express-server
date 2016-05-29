@@ -26,8 +26,8 @@ describe('plugin unit test', () => {
 
   beforeEach(() => {
     plugin = proxyquire('../../src/index', {
-      'express': expressStub,
-      'https': httpsStub
+      express: expressStub,
+      https: httpsStub
     });
     startServer = plugin['framework:expressServer'][1];
     sandbox = t.sinon.sandbox.create();

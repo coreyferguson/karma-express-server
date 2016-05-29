@@ -36,7 +36,11 @@ describe('plugin integration test', () => {
   // util //
   //////////
 
-  function startWithExtensions({protocol, extensions, httpsServerOptions}) {
+  function startWithExtensions({
+    protocol,
+    extensions,
+    httpsServerOptions
+  }) {
     return new Promise((resolve, reject) => {
       let args = {};
       let config = {
@@ -92,7 +96,7 @@ describe('plugin integration test', () => {
       extensions: [heartBeatExtension]
     }).then(server => {
       return getHeartbeat('http', server);
-    })
+    });
   });
 
   it('GET http extension', () => {
@@ -101,7 +105,7 @@ describe('plugin integration test', () => {
       extensions: [heartBeatExtension]
     }).then(server => {
       return getHeartbeat('http', server);
-    })
+    });
   });
 
   it('GET https extension', () => {
