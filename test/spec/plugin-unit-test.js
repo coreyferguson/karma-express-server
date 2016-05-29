@@ -24,7 +24,7 @@ describe('plugin unit test', () => {
       startServer,
       server;
 
-  beforeEach(() => {
+  before(() => {
     plugin = proxyquire('../../src/index', {
       express: expressStub,
       https: httpsStub

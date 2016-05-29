@@ -23,6 +23,7 @@ describe('plugin integration test', () => {
 
   let heartBeatExtension;
   let keys;
+  let server;
 
   before(() => {
     heartBeatExtension = (app, logger) => {
@@ -32,11 +33,15 @@ describe('plugin integration test', () => {
     };
   });
 
+  afterEach(() => {
+    return closeServer();
+  });
+
   //////////
   // util //
   //////////
 
-  function startWithExtensions({
+  function startServerWithExtensions({
     protocol,
     extensions,
     httpsServerOptions
@@ -45,8 +50,9 @@ describe('plugin integration test', () => {
       let args = {};
       let config = {
         expressServer: {
-          callback: (server) => {
-            resolve(server);
+          callback: (_server) => {
+            server = _server;
+            resolve();
           },
           extensions,
           protocol,
@@ -58,12 +64,28 @@ describe('plugin integration test', () => {
   }
 
   /**
+   * Close server if it was previously opened.
+   * @returns {Promise}
+   */
+  function closeServer() {
+    if (server === null || server === undefined) {
+      return Promise.resolve();
+    } else {
+      return new Promise((resolve, reject) => {
+        server.close(() => {
+          resolve();
+        });
+      });
+    }
+  }
+
+  /**
    * GET request to heartbeat endpoint
    * @param {string} protocol 'http' || 'https'
    * @param {Object} [server] http(s) server to be closed after GET request.
    * @returns {Promise}
    */
-  function getHeartbeat(protocol, server) {
+  function getHeartbeat(protocol) {
     return new Promise((resolve, reject) => {
       let options = {};
       if (protocol === 'https') {
@@ -76,10 +98,6 @@ describe('plugin integration test', () => {
       request(options, (err, res, body) => {
         if (err) {
           reject(err);
-        } else if (server !== null) {
-          server.close(() => {
-            resolve(res);
-          });
         } else {
           resolve(res);
         }
@@ -92,32 +110,32 @@ describe('plugin integration test', () => {
   ///////////
 
   it('GET default extension', () => {
-    return startWithExtensions({
+    return startServerWithExtensions({
       extensions: [heartBeatExtension]
-    }).then(server => {
-      return getHeartbeat('http', server);
+    }).then(() => {
+      return getHeartbeat('http');
     });
   });
 
   it('GET http extension', () => {
-    return startWithExtensions({
+    return startServerWithExtensions({
       protocol: 'http',
       extensions: [heartBeatExtension]
-    }).then(server => {
-      return getHeartbeat('http', server);
+    }).then(() => {
+      return getHeartbeat('http');
     });
   });
 
   it('GET https extension', () => {
-    return startWithExtensions({
+    return startServerWithExtensions({
       protocol: 'https',
       httpsServerOptions: {
-        key: key,
-        cert: cert
+        key,
+        cert
       },
       extensions: [heartBeatExtension]
-    }).then((server) => {
-      return getHeartbeat('https', server).then(res => {
+    }).then(() => {
+      return getHeartbeat('https').then(res => {
         return t.expect(res.statusCode).to.equal(200);
       });
     });
