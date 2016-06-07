@@ -5,6 +5,7 @@ const t = require('../support/globals-mocha'),
       plugin = require('../../src/index');
 
 const loggerStub = require('../stubs/logger-stub');
+const heartBeatExtension = require('../support/heartbeat-extension');
 
 const request = require('request'),
       fs = require('fs'),
@@ -21,17 +22,8 @@ describe('plugin integration test', () => {
   // initialization //
   ////////////////////
 
-  let heartBeatExtension;
   let keys;
   let server;
-
-  before(() => {
-    heartBeatExtension = (app, logger) => {
-      app.get('/heartbeat', (req, res) => {
-        res.sendStatus(200);
-      });
-    };
-  });
 
   afterEach(() => {
     return closeServer();

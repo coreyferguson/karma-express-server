@@ -27,10 +27,10 @@ module.exports = {
      * @param {karmaExpressServer.Config} config
      * @param {Karma.Plugin.Logger} logger [Official Docs]{@link http://karma-runner.github.io/0.13/dev/plugins.html}
      */
-    function framework(args, configOverrides, logger) {
+    function framework(args, config, logger, helper) {
       // default config
-      configOverrides = configOverrides || {};
-      configOverrides = configOverrides.expressServer || {};
+      config = config || {};
+      config = config.expressServer || {};
       let configDefaults = {
         callback: () => {},
         accessControlAllowOrigin: 'http://localhost:9876',
@@ -44,14 +44,14 @@ module.exports = {
         serverPort: 9877,
         extensions: []
       };
-      let config = {};
-      Object.assign(config, configDefaults, configOverrides);
+      let conf = {};
+      Object.assign(conf, configDefaults, config);
 
       // input validation
       if (
-        config.protocol === 'https' && (
-          config.httpsServerOptions === null ||
-          config.httpsServerOptions === undefined
+        conf.protocol === 'https' && (
+          conf.httpsServerOptions === null ||
+          conf.httpsServerOptions === undefined
         )
       ) {
         throw new Error('Illegal argument: `httpsServerOptions` cannot be null or undefined.');
@@ -64,34 +64,34 @@ module.exports = {
       app.use(bodyParser.json());
       app.use(function(req, res, next) {
         res.set('Access-Control-Allow-Credentials',
-            config.accessControlAllowCredentials.toString());
+            conf.accessControlAllowCredentials.toString());
         res.set('Access-Control-Allow-Methods',
-            config.accessControlAllowMethods);
-        res.set('Access-Control-Max-Age', config.accessControlMaxAge);
-        res.set('Access-Control-Allow-Headers', config.accessControlAllowHeaders);
-        res.set('Access-Control-Allow-Origin', config.accessControlAllowOrigin);
+            conf.accessControlAllowMethods);
+        res.set('Access-Control-Max-Age', conf.accessControlMaxAge);
+        res.set('Access-Control-Allow-Headers', conf.accessControlAllowHeaders);
+        res.set('Access-Control-Allow-Origin', conf.accessControlAllowOrigin);
         next();
       });
 
       // extend express application
-      config.extensions.forEach(function(extension) {
+      conf.extensions.forEach(function(extension) {
         extension(app, logger);
       });
 
       // start express server
-      if (config.protocol === 'https') {
+      if (conf.protocol === 'https') {
         var httpServer = https
-        .createServer(config.httpsServerOptions, app)
-        .listen(config.serverPort, () => {
-          log.info('Listening on port %d...', config.serverPort);
-          config.callback(httpServer);
+        .createServer(conf.httpsServerOptions, app)
+        .listen(conf.serverPort, () => {
+          log.info('Listening on port %d...', conf.serverPort);
+          conf.callback(httpServer);
         });
       } else {
         var httpServer = http
         .createServer(app)
-        .listen(config.serverPort, () => {
-          log.info('Listening on port %d...', config.serverPort);
-          config.callback(httpServer);
+        .listen(conf.serverPort, () => {
+          log.info('Listening on port %d...', conf.serverPort);
+          conf.callback(httpServer);
         });
       }
 
