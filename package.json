@@ -23,7 +23,8 @@
   "homepage": "https://github.com/coreyferguson/karma-express-server#readme",
   "dependencies": {
     "body-parser": "^1.15.1",
-    "express": "^4.13.4"
+    "express": "^4.13.4",
+    "longjohn": "^0.2.11"
   },
   "devDependencies": {
     "babel-core": "^6.9.1",
@@ -47,7 +48,6 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^1.7.0",
     "load-grunt-tasks": "^3.5.0",
-    "longjohn": "^0.2.11",
     "mocha": "^2.5.3",
     "proxyquire": "^1.7.9",
     "request": "^2.72.0",
