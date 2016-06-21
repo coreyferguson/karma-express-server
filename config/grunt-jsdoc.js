@@ -2,7 +2,7 @@
 'use strict';
 
 module.exports = {
-  dist : {
+  dist: {
     src: ['src/**/*.js'],
     options: {
       destination: 'api'

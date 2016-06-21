@@ -3,7 +3,8 @@ module.exports = {
   dev: {
     src: [
       'src/**/*.js',
-      'test/**/*.js'
+      'test/**/*.js',
+      'config/**/*.js'
     ]
   },
   options: {
